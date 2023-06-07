@@ -17,18 +17,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="zF7-4X-2me">
-                                <rect key="frame" x="20" y="159" width="353" height="200"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="신호를 켜주세요" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="zF7-4X-2me">
+                                <rect key="frame" x="20" y="79" width="353" height="350"/>
                                 <color key="backgroundColor" red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.050000000000000003" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="ahs-LC-92r"/>
+                                    <constraint firstAttribute="height" constant="350" id="ahs-LC-92r"/>
                                 </constraints>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xMy-mV-tSz">
-                                <rect key="frame" x="20" y="389" width="353" height="60"/>
+                                <rect key="frame" x="20" y="698" width="353" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="enZ-nR-hNE"/>
                                 </constraints>
@@ -42,10 +42,10 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="zF7-4X-2me" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="100" id="2tk-b6-Q8C"/>
+                            <constraint firstItem="zF7-4X-2me" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="2tk-b6-Q8C"/>
                             <constraint firstItem="zF7-4X-2me" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="2tv-56-CRt"/>
                             <constraint firstItem="zF7-4X-2me" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="5io-h5-4WU"/>
-                            <constraint firstItem="xMy-mV-tSz" firstAttribute="top" secondItem="zF7-4X-2me" secondAttribute="bottom" constant="30" id="9fZ-8s-Ejp"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="xMy-mV-tSz" secondAttribute="bottom" constant="60" id="dqe-4K-h3n"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zF7-4X-2me" secondAttribute="trailing" constant="20" id="kln-wy-RA3"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="xMy-mV-tSz" secondAttribute="trailing" constant="20" id="lTh-0f-3ta"/>
                             <constraint firstItem="xMy-mV-tSz" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="pSx-gb-klP"/>

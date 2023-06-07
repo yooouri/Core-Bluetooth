@@ -13,20 +13,23 @@ class ViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var button: UIButton!
     
-    var status = false
-    
     var myPeripheralManager = CBPeripheralManager()
+    
     var myCBUUID = CBUUID(string: "1234") //C720036C-32A6-428B-8327-CB51F4C71362
     var serviceCBUUID = CBUUID(string: "5678")
     var chCBUUID = CBUUID(string: "9012")
-//    lazy var myCharacteristic = CBMutableCharacteristic(type: myCBUUID, properties: [.notify, .writeWithoutResponse], value: nil, permissions: [.readable, .writeable])
-//    lazy var myService = CBMutableService(type: myCBUUID, primary: true)
     
-    var dataToSend = Data()
+    lazy var textCharacteristic = CBMutableCharacteristic(type: chCBUUID, properties: [.read,.notify], value: nil, permissions: [.readable, .writeable])
+    lazy var myService = CBMutableService(type: serviceCBUUID, primary: true)
+    
+    var status = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        textView.delegate = self
         myPeripheralManager = CBPeripheralManager(delegate: self, queue: nil)
+       
         
     }
     
@@ -48,59 +51,44 @@ class ViewController: UIViewController {
     }
     
     @IBAction func actAdvertising(_ sender: Any) {
-        if !validate(textView: textView) {
-            let alertController = UIAlertController(title: "메세지를 입력해주세요", message: nil, preferredStyle: .alert);
-            
-            let cancelAction = UIAlertAction(title: "확인", style: .cancel)
-            alertController.addAction(cancelAction)
-            self.present(alertController, animated: true)
-            return
-        }
         if !status {
-            settingServices()
+            myService.characteristics = [textCharacteristic]
+            myPeripheralManager.add(myService)
             myPeripheralManager.startAdvertising( [CBAdvertisementDataLocalNameKey: "MyTest",
                                                CBAdvertisementDataServiceUUIDsKey : [myCBUUID]])
-
+            textView.isEditable = true
+            textView.text = ""
             button.setTitle("신호 끄기", for: .normal)
         }else{
             
             myPeripheralManager.stopAdvertising()
+            textView.isEditable = false
+            textView.text = "신호를 켜주세요"
             button.setTitle("신호 켜기", for: .normal)
             myPeripheralManager.removeAllServices()
         }
         
         status.toggle()
     }
-    
-    func settingServices() {
-        print("tttttt11111",textView.text)
-        let myCharacteristic = CBMutableCharacteristic(type: chCBUUID, properties: .read, value: textView.text.data(using: .utf8), permissions: .readable)
-        let myService = CBMutableService(type: serviceCBUUID, primary: true)
-//        myService.characteristics?.append(myCharacteristic)
-        myService.characteristics = [myCharacteristic]
-        myPeripheralManager.add(myService)
-    }
-    
-    @IBAction func actSend(_ sender: Any) {
-        let textCharacteristic = CBMutableCharacteristic(type: chCBUUID, properties: [.read, .write], value: "너느뭐니".data(using: .utf8), permissions: [.readable, .writeable])
 
-        // Get the data
+    
+    func updateCharacteristic() {
+        if !status {
+            return
+        }
         if let data = textView.text.data(using: String.Encoding.utf8) {
-//            dataToSend = data
-
             let success = myPeripheralManager.updateValue(data, for: textCharacteristic, onSubscribedCentrals: nil)
             if !success{
-                let alertController = UIAlertController(title: "보내기 실패", message: nil, preferredStyle: .alert);
+                let alertController = UIAlertController(title: "전송 실패", message: nil, preferredStyle: .alert);
                 
                 let cancelAction = UIAlertAction(title: "확인", style: .cancel)
                 alertController.addAction(cancelAction)
                 self.present(alertController, animated: true)
             }
 
-
         }
-
     }
+
     
     
 }
@@ -120,10 +108,6 @@ extension ViewController: CBPeripheralManagerDelegate {
                    print("peripheral.state is poweredOff")
                case .poweredOn:
                    print("peripheral.state is poweredOn")
-//            settingServices()
-//            let serviceUUID = CBUUID(string: myCBUUID.uuidString)
-//                   self.service = CBMutableService(type: serviceUUID, primary: true)
-            
                @unknown default:
                    print("peripheral.state default case")
                }
@@ -144,60 +128,13 @@ extension ViewController: CBPeripheralManagerDelegate {
         print("Start advertising succeeded")
 
     }
+
     
-    func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveRead request: CBATTRequest) {
-//        if request.characteristic.uuid == myCharacteristic.uuid {
-//            print("request", request.characteristic.uuid)
-//            print("my", myCharacteristic.uuid)
-            
-//            if request.offset > myCharacteristic.value?.count ?? 0 {
-//                print("invaildoffset!!!!")
-//                myPeripheralManager.respond(to: request, withResult: .invalidOffset)
-//                return
-//            }
-//            request.value = myCharacteristic.value?.subdata(in: NSRange(location: request.offset, length: (myCharacteristic.value?.count ?? 0)-request.offset))
-            
-            print("request.value", request.value)
-            request.value = "리퀘스트".data(using: .utf8)
-            myPeripheralManager.respond(to: request, withResult: .success)
-            print("request",request)
-            
-//        }else{
-//            print("request diff", request.characteristic.uuid)
-//        }
+}
+
+extension ViewController: UITextViewDelegate  {
+    func textViewDidChange(_ textView: UITextView) {
+        updateCharacteristic()
     }
-    func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
-        for request in requests {
-                   if let value = request.value {
-                       
-                       //here is the message text that we receive, use it as you wish.
-                       let messageText = String(data: value, encoding: String.Encoding.utf8) as String?
-                   }
-                   self.myPeripheralManager.respond(to: request, withResult: .success)
-               }
-    }
-    
-    func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didSubscribeTo characteristic: CBCharacteristic) {
-        print("구독ㄱㄱ", peripheral)
-        print("tttttt",textView.text)
-        let textCharacteristic = CBMutableCharacteristic(type: chCBUUID, properties: [.read, .write], value: textView.text.data(using: .utf8), permissions: [.readable, .writeable])
-
-        // Get the data
-        if let data = textView.text.data(using: String.Encoding.utf8) {
-//            dataToSend = data
-
-            let success = myPeripheralManager.updateValue(data, for: textCharacteristic, onSubscribedCentrals: nil)
-            if !success{
-                let alertController = UIAlertController(title: "구독 실패", message: nil, preferredStyle: .alert);
-                
-                let cancelAction = UIAlertAction(title: "확인", style: .cancel)
-                alertController.addAction(cancelAction)
-                self.present(alertController, animated: true)
-            }
-
-        }
-
-    }
-    
     
 }
