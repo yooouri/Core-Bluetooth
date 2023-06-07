@@ -30,12 +30,32 @@ class ViewController: UIViewController {
         
     }
     
+    //빈 화면 터치시 키보드 내리기
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
     
+    func validate(textView textView: UITextView) -> Bool {
+        guard let text = textView.text,
+            !text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty else {
+            // this will be reached if the text is nil (unlikely)
+            // or if the text only contains white spaces
+            // or no text at all
+            return false
+        }
+
+        return true
+    }
+    
     @IBAction func actAdvertising(_ sender: Any) {
-        
+        if !validate(textView: textView) {
+            let alertController = UIAlertController(title: "메세지를 입력해주세요", message: nil, preferredStyle: .alert);
+            
+            let cancelAction = UIAlertAction(title: "확인", style: .cancel)
+            alertController.addAction(cancelAction)
+            self.present(alertController, animated: true)
+            return
+        }
         if !status {
             settingServices()
             myPeripheralManager.startAdvertising( [CBAdvertisementDataLocalNameKey: "MyTest",
@@ -46,6 +66,7 @@ class ViewController: UIViewController {
             
             myPeripheralManager.stopAdvertising()
             button.setTitle("신호 켜기", for: .normal)
+            myPeripheralManager.removeAllServices()
         }
         
         status.toggle()

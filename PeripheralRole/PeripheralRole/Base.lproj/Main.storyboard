@@ -38,15 +38,6 @@
                                     <action selector="actAdvertising:" destination="BYZ-38-t0r" eventType="touchUpInside" id="yy8-IX-N4T"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bA9-pI-pUp">
-                                <rect key="frame" x="111" y="509" width="170" height="76"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="gray" title="보내기"/>
-                                <connections>
-                                    <action selector="actSend:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Uqr-Y5-9u1"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
